@@ -1,0 +1,18 @@
+{
+    "private": true,
+    "type": "module",
+    "imports": {
+        "#/*": "./app/*"
+    },
+    "scripts": {
+        "dev": "node --watch --import remix/node-tsx server.ts",
+        "start": "NODE_ENV=production node --import remix/node-tsx server.ts"
+    },
+    "dependencies": {
+        "remix": "3.0.0-beta.5"
+    },
+    "devDependencies": {
+        "@types/node": "^25.6.0",
+        "@typescript/native-preview": "latest"
+    }
+}
