@@ -1,10 +1,11 @@
+import { DetailFrame } from "#/assets/detail-frame.tsx";
 import { IssueColumn } from "#/components/issue-column.tsx";
-import { issues } from "#/data/data.ts";
+import type { Issue } from "#/data/tables.ts";
 import { routes } from "#/routes.ts";
 import { getContext } from "remix/middleware/async-context";
-import { Frame } from "remix/ui";
+import { Handle } from "remix/ui";
 
-export function Document() {
+export function Document(handle: Handle<{ issues: readonly Issue[]; selectedIssue: number }>) {
     let { url } = getContext();
 
     return () => (
@@ -30,8 +31,11 @@ export function Document() {
             <body>
                 <div id="root">
                     <main class="app-shell">
-                        <IssueColumn issues={issues} />
-                        <Frame name="detail" src={url.toString()} />
+                        <IssueColumn
+                            issues={handle.props.issues}
+                            selectedIssue={handle.props.selectedIssue}
+                        />
+                        <DetailFrame src={url.toString()} />
                     </main>
                 </div>
             </body>

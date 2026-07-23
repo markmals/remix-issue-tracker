@@ -1,18 +1,20 @@
-import { commentsByIssueId, Issue, Comment } from "#/data/data.ts";
+import type { Issue } from "#/data/tables.ts";
+import { getContext } from "remix/middleware/async-context";
 import { Handle } from "remix/ui";
+import { Comments } from "#/assets/comments.tsx";
 
-export function DetailPanel(handle: Handle<{ issue: Issue }>) {
+type DetailPanelProps = {
+    issue: Issue;
+};
+
+export function DetailPanel(handle: Handle<DetailPanelProps>) {
+    let { url } = getContext();
+
     return () => (
         <section aria-label="Selected issue details" class="detail-panel">
             <IssueHeader issue={handle.props.issue} />
             <IssueSummary issue={handle.props.issue} />
-            <div style={{ opacity: 1 }}>
-                <Timeline
-                    comments={commentsByIssueId[handle.props.issue.id] ?? []}
-                    issue={handle.props.issue}
-                />
-            </div>
-            <CommentComposer />
+            <Comments issueId={handle.props.issue.id} src={url.toString()} />
         </section>
     );
 }
@@ -48,48 +50,5 @@ function IssueSummary(handle: Handle<{ issue: Issue }>) {
             </div>
             <p>{handle.props.issue.description}</p>
         </div>
-    );
-}
-
-function Timeline(handle: Handle<{ issue: Issue; comments: readonly Comment[] }>) {
-    return () => (
-        <section aria-labelledby="timeline-heading" class="timeline">
-            <div class="section-heading">
-                <h3 id="timeline-heading">Timeline</h3>
-                <span>{handle.props.comments.length} updates</span>
-            </div>
-            {handle.props.comments.map(comment => (
-                <CommentCard comment={comment} />
-            ))}
-        </section>
-    );
-}
-
-function CommentCard(handle: Handle<{ comment: Comment }>) {
-    return () => (
-        <article class="comment-card">
-            <div aria-hidden="true" class="avatar">
-                {handle.props.comment.author.charAt(0)}
-            </div>
-            <div>
-                <div class="comment-heading">
-                    <strong>{handle.props.comment.author}</strong>
-                    <span>{handle.props.comment.time}</span>
-                </div>
-                <p>{handle.props.comment.body}</p>
-            </div>
-        </article>
-    );
-}
-
-function CommentComposer() {
-    return () => (
-        <form class="composer">
-            <label for="comment">Add a comment</label>
-            <textarea id="comment" placeholder="Leave a project update..." rows={4} />
-            <div class="composer-actions">
-                <button type="submit">Comment</button>
-            </div>
-        </form>
     );
 }
