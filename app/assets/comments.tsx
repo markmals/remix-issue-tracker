@@ -135,16 +135,20 @@ export let Timeline = clientEntry(
         let store = new CommentStore(handle.props.comments);
 
         if (!IS_SERVER) {
-            // store mutations -> repaint, and broadcast the live count to the
-            // sidebar (optimistic on add, real after settle). Broadcast on
-            // `window`, not `frames.top`: a remounted comments frame resolves
+            // store mutations -> repaint, then broadcast the live count after
+            // render-time sync (optimistic on add, real after settle). Broadcast
+            // on `window`, not `frames.top`: a remounted comments frame resolves
             // `frames.top` to itself, so the sidebar would never hear it.
             addEventListeners(store, handle.signal, {
                 change() {
+                    handle.queueTask(signal => {
+                        if (signal.aborted) return;
+
+                        window.dispatchEvent(
+                            new CommentCountEvent(handle.props.issueId, store.comments.length),
+                        );
+                    });
                     handle.update();
-                    window.dispatchEvent(
-                        new CommentCountEvent(handle.props.issueId, store.comments.length),
-                    );
                 },
             });
 
