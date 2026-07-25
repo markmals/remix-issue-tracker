@@ -1,17 +1,24 @@
+import { randomUUID } from "node:crypto";
+
 import { routes } from "#/routes.ts";
 import { createAssetServer } from "remix/assets";
 import { createController } from "remix/fetch-router";
 import { redirect } from "remix/response/redirect";
 
+const ASSET_BUILD_ID = process.env.ASSET_BUILD_ID ?? randomUUID();
+
 export let assets = createAssetServer({
     basePath: "/assets",
     rootDir: process.cwd(),
+    fingerprint: { buildId: ASSET_BUILD_ID },
     fileMap: {
         "app/*path": "app/*path",
         "node_modules/*path": "node_modules/*path",
     },
     allow: ["app/assets/**/*", "app/routes.ts", "app/data/schemas.ts", "node_modules/**"],
     deny: ["app/**/*.server.*", "server.ts"],
+    minify: true,
+    watch: false,
     sourceMaps: process.env.NODE_ENV === "development" ? "external" : undefined,
     scripts: {
         define: {
