@@ -244,12 +244,19 @@ function CommentComposer(handle: Handle<{ issueId: number }>) {
                     );
                     form.reset();
 
-                    let response = await fetch(form.action, {
-                        body: formData,
-                        method: form.method,
-                    });
+                    let requestFailed = false;
 
-                    if (!response.ok && textarea) {
+                    try {
+                        let response = await fetch(form.action, {
+                            body: formData,
+                            method: form.method,
+                        });
+                        requestFailed = !response.ok;
+                    } catch {
+                        requestFailed = true;
+                    }
+
+                    if (requestFailed && textarea) {
                         // restore the comment in the case of an error
                         textarea.value = comment;
                     }
