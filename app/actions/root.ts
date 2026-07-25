@@ -1,11 +1,9 @@
-import { randomUUID } from "node:crypto";
-
 import { routes } from "#/routes.ts";
 import { createAssetServer } from "remix/assets";
 import { createController } from "remix/fetch-router";
 import { redirect } from "remix/response/redirect";
 
-const ASSET_BUILD_ID = process.env.ASSET_BUILD_ID ?? randomUUID();
+const ASSET_BUILD_ID = process.env.ASSET_BUILD_ID ?? "local";
 
 export let assets = createAssetServer({
     basePath: "/assets",
