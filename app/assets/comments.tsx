@@ -1,6 +1,5 @@
 import { routes } from "#/routes.ts";
 import {
-    addEventListeners,
     clientEntry,
     Frame,
     Handle,
@@ -139,8 +138,9 @@ export let Timeline = clientEntry(
             // render-time sync (optimistic on add, real after settle). Broadcast
             // on `window`, not `frames.top`: a remounted comments frame resolves
             // `frames.top` to itself, so the sidebar would never hear it.
-            addEventListeners(store, handle.signal, {
-                change() {
+            store.addEventListener(
+                CHANGE,
+                () => {
                     handle.queueTask(signal => {
                         if (signal.aborted) return;
 
@@ -150,7 +150,8 @@ export let Timeline = clientEntry(
                     });
                     handle.update();
                 },
-            });
+                { signal: handle.signal },
+            );
 
             // optimistic add, dispatched from the composer outside the frame
             handle.frame.addEventListener(
@@ -165,11 +166,13 @@ export let Timeline = clientEntry(
             );
 
             // reload done -> fresh server truth is in props -> release the hold
-            addEventListeners(handle.frame, handle.signal, {
-                reloadComplete() {
+            handle.frame.addEventListener(
+                "reloadComplete",
+                () => {
                     store.settle();
                 },
-            });
+                { signal: handle.signal },
+            );
         }
 
         return () => {

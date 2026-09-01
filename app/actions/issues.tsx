@@ -6,7 +6,7 @@ import { frameResponseInit } from "#/middleware.ts";
 import { routes } from "#/routes.ts";
 import * as s from "remix/data-schema";
 import * as coerce from "remix/data-schema/coerce";
-import { createController } from "remix/fetch-router";
+import { createController } from "remix/router";
 
 export default createController(routes.issues, {
     actions: {

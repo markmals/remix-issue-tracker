@@ -1,5 +1,5 @@
 import { routes } from "#/routes.ts";
-import { createController } from "remix/fetch-router";
+import { createController } from "remix/router";
 import { redirect } from "remix/response/redirect";
 import * as s from "remix/data-schema";
 import { AddCommentSchema, IssueIdSchema } from "#/data/schemas.ts";
