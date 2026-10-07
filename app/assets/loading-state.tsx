@@ -1,4 +1,4 @@
-import { Handle } from "remix/ui";
+import { Handle } from "remix/component";
 
 type LoadingStateProps = {
     label: string;

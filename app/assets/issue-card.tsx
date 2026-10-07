@@ -1,6 +1,6 @@
 import { Issue } from "#/data/tables.ts";
 import { routes } from "#/routes.ts";
-import { clientEntry, Handle, link, on } from "remix/ui";
+import { clientEntry, Handle, link, on } from "remix/component";
 
 export let IssueCard = clientEntry(
     import.meta.url,

@@ -3,12 +3,12 @@ import { createAssetServer } from "remix/assets";
 import { createController } from "remix/router";
 import { redirect } from "remix/response/redirect";
 
-const ASSET_BUILD_ID = process.env.ASSET_BUILD_ID ?? "local";
-
 export let assets = createAssetServer({
     basePath: "/assets",
     rootDir: process.cwd(),
-    fingerprint: { buildId: ASSET_BUILD_ID },
+    // content hashes: fingerprints stay stable across restarts on their own,
+    // so there is no build id to thread through the environment anymore
+    fingerprint: true,
     allowFiles: ["app/assets/**/*", "app/routes.ts", "app/data/schemas.ts"],
     allowPackages: ["remix"],
     denyFiles: ["app/**/*.server.*", "server.ts"],

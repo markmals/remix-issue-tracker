@@ -12,7 +12,7 @@ let middleware = [staticFiles("./public"), formData(), asyncContext(), render()]
 
 type AppContext = MiddlewareContext<typeof middleware>;
 
-declare module "remix/router" {
+declare module "remix" {
     interface RouterTypes {
         context: AppContext;
     }

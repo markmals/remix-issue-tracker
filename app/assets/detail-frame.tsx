@@ -1,4 +1,4 @@
-import { clientEntry, Frame, Handle } from "remix/ui";
+import { clientEntry, Frame, Handle } from "remix/component";
 
 /**
  * Wraps the detail frame so we can dim the outgoing issue while the next one

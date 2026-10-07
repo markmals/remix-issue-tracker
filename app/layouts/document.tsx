@@ -3,11 +3,12 @@ import { DetailFrame } from "#/assets/detail-frame.tsx";
 import { IssueColumn } from "#/components/issue-column.tsx";
 import type { Issue } from "#/data/tables.ts";
 import { getContext } from "remix/middleware/async-context";
-import { Handle } from "remix/ui";
+import { Handle } from "remix/component";
+import { ImportMap } from "remix/component/server";
 
-const [STYLESHEET_HREF, ENTRY_HREF] = await Promise.all([
+const [STYLESHEET_HREF, ENTRY] = await Promise.all([
     assets.getHref("app/assets/index.css"),
-    assets.getHref("app/assets/entry.ts"),
+    assets.getScriptEntry("app/assets/entry.ts"),
 ]);
 
 export function Document(handle: Handle<{ issues: readonly Issue[]; selectedIssue: number }>) {
@@ -27,9 +28,13 @@ export function Document(handle: Handle<{ issues: readonly Issue[]; selectedIssu
                     href={STYLESHEET_HREF}
                     rel="stylesheet"
                 />
+                <ImportMap value={ENTRY.importMap} />
+                {ENTRY.preloads.map(preload => (
+                    <link href={preload} rel="modulepreload" />
+                ))}
                 <script
                     async
-                    src={ENTRY_HREF}
+                    src={ENTRY.href}
                     type="module"
                 />
             </head>

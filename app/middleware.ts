@@ -1,9 +1,9 @@
-import type { RemixNode } from "remix/ui";
+import type { RemixNode } from "remix/component";
 import path from "node:path";
 
 import { renderWith } from "remix/middleware/render";
 import { createHtmlResponse as html } from "remix/response/html";
-import { renderToStream } from "remix/ui/server";
+import { renderToStream } from "remix/component/server";
 import { assert } from "remix/assert";
 import { assets } from "./actions/root.ts";
 
@@ -21,8 +21,15 @@ export function render() {
 
                         let [filePath, fragment] = entryId.split("#");
 
+                        // script entries resolve through import maps now, so the
+                        // entry carries its own mappings and module preloads
+                        let { href, importMap, preloads } =
+                            await assets.getScriptEntry(filePath);
+
                         return {
-                            href: await assets.getHref(filePath),
+                            href,
+                            importMap,
+                            preloads,
                             exportName: fragment || component.name || titleCaseFileName(filePath),
                         };
                     },

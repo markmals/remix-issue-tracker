@@ -1,6 +1,6 @@
 import type { Issue } from "#/data/tables.ts";
 import { getContext } from "remix/middleware/async-context";
-import { Handle } from "remix/ui";
+import { Handle } from "remix/component";
 import { Comments } from "#/assets/comments.tsx";
 
 type DetailPanelProps = {

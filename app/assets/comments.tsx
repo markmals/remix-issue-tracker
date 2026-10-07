@@ -7,7 +7,7 @@ import {
     ref,
     SerializableProps,
     TypedEventTarget,
-} from "remix/ui";
+} from "remix/component";
 import * as s from "remix/data-schema";
 import { AddCommentSchema } from "#/data/schemas.ts";
 import type { Comment } from "#/data/tables.ts";
