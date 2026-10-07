@@ -1,14 +1,24 @@
 import commentsController from "#/actions/comments.ts";
 import issuesController from "#/actions/issues.tsx";
-import rootController from "#/actions/root.ts";
+import rootController, { assets } from "#/actions/root.ts";
 import { routes } from "#/routes.ts";
 import { asyncContext } from "remix/middleware/async-context";
 import { formData } from "remix/middleware/form-data";
+import { render } from "remix/middleware/render";
 import { staticFiles } from "remix/middleware/static";
 import { createRouter, MiddlewareContext } from "remix/router";
-import { render } from "./middleware.ts";
 
-let middleware = [staticFiles("./public"), formData(), asyncContext(), render()] as const;
+let middleware = [
+    staticFiles("./public"),
+    formData(),
+    asyncContext(),
+    render({
+        assets,
+        onError(error) {
+            console.error(error);
+        },
+    }),
+] as const;
 
 type AppContext = MiddlewareContext<typeof middleware>;
 
