@@ -13,7 +13,7 @@
         "typecheck": "tsgo"
     },
     "dependencies": {
-        "remix": "3.0.0-beta.5"
+        "remix": "3.0.0"
     },
     "devDependencies": {
         "@types/node": "^25.6.0",

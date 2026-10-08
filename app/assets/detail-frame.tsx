@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, Frame, Handle } from "remix/ui";
+import { clientEntry, Frame, Handle } from "remix/component";
 
 /**
  * Wraps the detail frame so we can dim the outgoing issue while the next one
@@ -22,9 +22,7 @@ export let DetailFrame = clientEntry(
             // the new issue is on screen the moment its comments island renders —
             // settle then, not when the reload stream closes (the nested comments
             // frame keeps it open while the timeline loads)
-            addEventListeners(window, handle.signal, {
-                issueshown: settle,
-            });
+            window.addEventListener("issueshown", settle, { signal: handle.signal });
 
             // the frame mounts during this island's first render, so resolve
             // its handle in a task that runs after the DOM has been updated
@@ -32,15 +30,18 @@ export let DetailFrame = clientEntry(
                 let frame = handle.frames.get("detail");
                 if (!frame) return;
 
-                addEventListeners(frame, handle.signal, {
-                    reloadStart() {
+                frame.addEventListener(
+                    "reloadStart",
+                    () => {
                         pending = true;
                         handle.update();
                     },
-                    // backstop for detail content that never announces an issue
-                    // (e.g. a not-found response renders no comments island)
-                    reloadComplete: settle,
-                });
+                    { signal: handle.signal },
+                );
+
+                // backstop for detail content that never announces an issue
+                // (e.g. a not-found response renders no comments island)
+                frame.addEventListener("reloadComplete", settle, { signal: handle.signal });
             });
         }
 

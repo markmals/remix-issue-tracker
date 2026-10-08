@@ -1,7 +1,7 @@
 import { IssueCard } from "#/assets/issue-card.tsx";
 import type { Issue } from "#/data/tables.ts";
 
-import { Handle } from "remix/ui";
+import { Handle } from "remix/component";
 
 type IssueColumnProps = {
     selectedIssue: number;

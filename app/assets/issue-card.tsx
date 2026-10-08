@@ -1,6 +1,6 @@
 import { Issue } from "#/data/tables.ts";
 import { routes } from "#/routes.ts";
-import { addEventListeners, clientEntry, Handle, link, on } from "remix/ui";
+import { clientEntry, Handle, link, on } from "remix/component";
 
 export let IssueCard = clientEntry(
     import.meta.url,
@@ -10,25 +10,32 @@ export let IssueCard = clientEntry(
         let pending = false;
 
         if (typeof window !== "undefined") {
-            addEventListeners(window, handle.signal, {
-                // highlight this card the moment its issue's detail is on screen —
-                // the comments island announces it as the title renders, so we no
-                // longer wait for the navigation (and its comments) to fully settle
-                issueshown(event) {
+            // highlight this card the moment its issue's detail is on screen —
+            // the comments island announces it as the title renders, so we no
+            // longer wait for the navigation (and its comments) to fully settle
+            window.addEventListener(
+                "issueshown",
+                event => {
                     // any arriving issue settles (or supersedes) the pending navigation
                     pending = false;
                     selectedIssue = event.issueId;
                     handle.update();
                 },
-                // the comments timeline broadcasts its live count on `window`;
-                // adopt it when it's for this card's issue (optimistic + settled)
-                commentcount(event) {
+                { signal: handle.signal },
+            );
+
+            // the comments timeline broadcasts its live count on `window`;
+            // adopt it when it's for this card's issue (optimistic + settled)
+            window.addEventListener(
+                "commentcount",
+                event => {
                     if (event.issueId === handle.props.issue.id) {
                         commentCount = event.count;
                         handle.update();
                     }
                 },
-            });
+                { signal: handle.signal },
+            );
         }
 
         return () => (
